@@ -27,13 +27,32 @@ import retrofit2.HttpException
 import java.io.IOException
 
 /**
- * UI state for the Home screen
+ * UI state for the Home screen (only 3 possible states)
+ * MarsUiState.Loading, MarsUiStare.Success(String), MarsUiState.Error
  */
 sealed interface MarsUiState {
     data class Success(val photos: String) : MarsUiState
+    // Represents a successful retrieval of Mars photos.
+    // The original starter code stored the retrieved photos
+    // as a long String of JSON key, value pairs and displayed that in the homescreen.
+    // Later the code was amended in MarsViewModel.kt
+    // to read the data into a list of MarsPhoto.
+    // The length of the list is displayed in a string using string formatting:
+
     object Error : MarsUiState
+    // Signifies an error during the photo fetching process.
+    // Doesn't hold additional data, but its presence indicates a problem.
     object Loading : MarsUiState
+    // Indicates that photos are currently being fetched.
+    // Used to display loading indicators or messages to the user.
 }
+
+/*
+Sealed Interface defines a limited set of possible UI states
+related to fetching Mars photos.
+It ensures that variables can only hold one of these specific states,
+enhancing code safety and clarity.
+ */
 
 class MarsViewModel : ViewModel() {
     /** The mutable State that stores the status of the most recent request */
@@ -53,17 +72,38 @@ class MarsViewModel : ViewModel() {
      */
     fun getMarsPhotos() {
         viewModelScope.launch {
-            marsUiState = MarsUiState.Loading
-            marsUiState = try {
+            marsUiState = MarsUiState.Loading  // indicates that photos are being fetched
+            // the loading icon will be seen on the app's screen
+
+            marsUiState = try { // possible network access exception
                 val listResult = MarsApi.retrofitService.getPhotos()
-                MarsUiState.Success(
+                // see icon in the gutter to the left of the line above
+                // getPhotos() is a non-blocking suspend function and
+                // is only used here and is
+                // defined in MarsApiService.kt
+
+                // if all goes well and data reading is complete,
+                // the following line is executed
+                // otherwise an exception error is caught in a catch block
+                MarsUiState.Success(  // this state is assigned to marsUiState
                     "Success: ${listResult.size} Mars photos retrieved"
                 )
             } catch (e: IOException) {
-                MarsUiState.Error
+                MarsUiState.Error  // if a runtime network error occurs
+                                   // then this state is assigned to marsUiState
             } catch (e: HttpException) {
-                MarsUiState.Error
+                MarsUiState.Error  // if a runtime HTTP error occurs e.g. page not found
+                                   // then this state is assigned to marsUiState
             }
         }
     }
 }
+/*
+
+viewModelScope.launch launches a new coroutine
+without blocking the current thread
+and returns a reference to the coroutine as a Job.
+The coroutine is cancelled when the resulting job is cancelled.
+Cancelled when ViewModel is cancelled.
+
+ */

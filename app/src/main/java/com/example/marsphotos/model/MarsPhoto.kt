@@ -28,3 +28,8 @@ data class MarsPhoto(
     @SerialName(value = "img_src")
     val imgSrc: String
 )
+
+// img_src is the key name in the NASA data, see:
+// https://android-kotlin-fun-mars-server.appspot.com/photos
+// Since Kotlin does not allow underscores in a variable name,
+// in the code above, img_src maps to imgSrc

@@ -42,6 +42,8 @@ fun HomeScreen(
         is MarsUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
         is MarsUiState.Success -> ResultScreen(
             marsUiState.photos, modifier = modifier.fillMaxWidth()
+            // note, in the MarsViewModel, MarsUiState.Success.photos is given this value:
+            // "Success: ${listResult.size} Mars photos retrieved"
         )
 
         is MarsUiState.Error -> ErrorScreen( modifier = modifier.fillMaxSize())
@@ -86,7 +88,7 @@ fun ResultScreen(photos: String, modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center,
         modifier = modifier
     ) {
-        Text(text = photos)
+        Text(text = photos)  //
     }
 }
 
