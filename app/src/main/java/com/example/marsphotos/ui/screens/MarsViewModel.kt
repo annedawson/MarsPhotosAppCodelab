@@ -21,10 +21,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.marsphotos.model.MarsPhoto
-import com.example.marsphotos.network.MarsApi
+// import com.example.marsphotos.network.MarsApi - now in the MarsPhotosRepository
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import com.example.marsphotos.data.NetworkMarsPhotosRepository
 
 /**
  * UI state for the Home screen (only 3 possible states)
@@ -55,6 +56,7 @@ enhancing code safety and clarity.
  */
 
 class MarsViewModel : ViewModel() {
+
     /** The mutable State that stores the status of the most recent request */
     var marsUiState: MarsUiState by mutableStateOf(MarsUiState.Loading)
         private set
@@ -76,11 +78,15 @@ class MarsViewModel : ViewModel() {
             // the loading icon will be seen on the app's screen
 
             marsUiState = try { // possible network access exception
-                val listResult = MarsApi.retrofitService.getPhotos()
+                // val listResult = MarsApi.retrofitService.getPhotos() - old method
+
+                val marsPhotosRepository = NetworkMarsPhotosRepository()
+                val listResult = marsPhotosRepository.getMarsPhotos()
+
                 // see icon in the gutter to the left of the line above
-                // getPhotos() is a non-blocking suspend function and
+                // getMarsPhotos() is a non-blocking suspend function and
                 // is only used here and is
-                // defined in MarsApiService.kt
+                // defined in MarsPhotosRepository.kt
 
                 // if all goes well and data reading is complete,
                 // the following line is executed
