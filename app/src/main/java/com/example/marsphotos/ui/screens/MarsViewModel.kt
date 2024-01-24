@@ -80,6 +80,7 @@ class MarsViewModel : ViewModel() {
             marsUiState = try { // possible network access exception
                 // val listResult = MarsApi.retrofitService.getPhotos() - old method
 
+                // new data acquisition method using Repository to call MarsApi
                 val marsPhotosRepository = NetworkMarsPhotosRepository()
                 val listResult = marsPhotosRepository.getMarsPhotos()
 
