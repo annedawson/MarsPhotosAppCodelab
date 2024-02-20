@@ -49,8 +49,12 @@ fun MarsPhotosApp() {
                 .fillMaxSize()
                 .padding(it)
         ) {
-            val marsViewModel: MarsViewModel = viewModel()
-            HomeScreen(marsUiState = marsViewModel.marsUiState)
+            // val marsViewModel: MarsViewModel = viewModel()
+            val marsViewModel: MarsViewModel =
+                viewModel(factory = MarsViewModel.Factory)
+            // returns an existing ViewModel or creates a new one if none exists
+
+            HomeScreen(marsUiState = marsViewModel.marsUiState) // Loading, Success, Error
         }
     }
 }

@@ -27,17 +27,20 @@ import retrofit2.http.GET
 // The MarsApiService is used to get the data from the internet as a list of MarsPhotos.
 // MarsPhoto is a data class which is serializable and hold the id and imgSrc values
 
-    private const val BASE_URL =
-        "https://android-kotlin-fun-mars-server.appspot.com"
+ /*   this gone to AppContainer
+ private const val BASE_URL =
+        "https://android-kotlin-fun-mars-server.appspot.com"*/
 
     /**
      * Use the Retrofit builder to build a retrofit object
      * using a kotlinx.serialization converter
      */
+
+    /* this gone to AppContainer
     private val retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .baseUrl(BASE_URL)
-        .build()
+        .build()*/
 
     /**
      * Retrofit service object for creating api calls
@@ -60,18 +63,21 @@ import retrofit2.http.GET
     /**
      * A public Api object that exposes the lazy-initialized Retrofit service
      */
-    object MarsApi {
+    //object MarsApi {
         /*
         The call to create() function on a Retrofit object is expensive
         in terms of memory, speed, and performance. The app needs only
         one instance of the Retrofit API service, so you expose the service
         to the rest of the app using object declaration.
          */
+
+        /* this gone to AppContainer
         val retrofitService: MarsApiService by lazy {
             retrofit.create(MarsApiService::class.java)
-        }
+        }*/
+
         // Note: Remember "lazy initialization" is when object creation is purposely delayed,
         // until you actually need that object, to avoid unnecessary computation
         // or use of other computing resources.
         // Kotlin has first-class support for lazy instantiation.
-}
+// }

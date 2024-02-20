@@ -26,6 +26,13 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 import com.example.marsphotos.data.NetworkMarsPhotosRepository
+import com.example.marsphotos.data.MarsPhotosRepository
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.marsphotos.MarsPhotosApplication
 
 /**
  * UI state for the Home screen (only 3 possible states)
@@ -55,7 +62,9 @@ It ensures that variables can only hold one of these specific states,
 enhancing code safety and clarity.
  */
 
-class MarsViewModel : ViewModel() {
+class MarsViewModel(private val marsPhotosRepository: MarsPhotosRepository) : ViewModel(){
+
+//class MarsViewModel : ViewModel() {
 
     /** The mutable State that stores the status of the most recent request */
     var marsUiState: MarsUiState by mutableStateOf(MarsUiState.Loading)
@@ -81,7 +90,7 @@ class MarsViewModel : ViewModel() {
                 // val listResult = MarsApi.retrofitService.getPhotos() - old method
 
                 // new data acquisition method using Repository to call MarsApi
-                val marsPhotosRepository = NetworkMarsPhotosRepository()
+                //val marsPhotosRepository = NetworkMarsPhotosRepository()
                 val listResult = marsPhotosRepository.getMarsPhotos()
 
                 // see icon in the gutter to the left of the line above
@@ -104,13 +113,27 @@ class MarsViewModel : ViewModel() {
             }
         }
     }
+    /*
+
+    viewModelScope.launch launches a new coroutine
+    without blocking the current thread
+    and returns a reference to the coroutine as a Job.
+    The coroutine is cancelled when the resulting job is cancelled.
+    Cancelled when ViewModel is cancelled.
+
+     */
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as MarsPhotosApplication)
+                val marsPhotosRepository = application.container.marsPhotosRepository
+                MarsViewModel(marsPhotosRepository = marsPhotosRepository)
+            }
+        }
+    }
+
+
 }
-/*
 
-viewModelScope.launch launches a new coroutine
-without blocking the current thread
-and returns a reference to the coroutine as a Job.
-The coroutine is cancelled when the resulting job is cancelled.
-Cancelled when ViewModel is cancelled.
 
- */
